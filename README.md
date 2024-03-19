@@ -28,7 +28,22 @@ git clone https://github.com/xinjuezou-whi/whi_motion_interface.git
 And the Intel librealsense2, please refer to its [website](https://github.com/IntelRealSense/librealsense)
 
 ## Build
+Make sure your gcc version is later than 8 with command:
+```
+gcc -v
+```
+![image](https://github.com/xinjuezou-whi/whi_3dobject_tracking/assets/72239958/3d14c9b8-47ac-4686-b7d0-032441ce4dc9)
 
+Otherwise run following commands to upgrade it:
+```
+sudo apt install gcc-9 g++-9
+sudo update-alternatives --remove-all gcc 
+sudo update-alternatives --remove-all g++
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 9
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9
+```
+
+Then build the package:
 ```
 cd <your workspace>/src
 git clone https://github.com/xinjuezou-whi/whi_3dobject_tracking.git
