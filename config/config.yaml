@@ -1,8 +1,10 @@
 whi_3dobject_tracking:
   image_resolution: [848, 480] # width, height
+  frame_rates: [60, 60] # color and depth
   align_to_color: false
   view_color: true
   view_depth: true
+  print_intrinsics: false
   visualize_pose_result: false
   use_region_modality: true
   use_depth_modality: true

@@ -40,13 +40,11 @@ bool RealSense::SetUp()
     // Configure camera
     if (use_color_camera_)
     {
-      // config_.enable_stream(RS2_STREAM_COLOR, 960, 540, RS2_FORMAT_BGR8, 60);
-      config_.enable_stream(RS2_STREAM_COLOR, color_width_, color_height_, RS2_FORMAT_BGR8, 60);
+      config_.enable_stream(RS2_STREAM_COLOR, color_width_, color_height_, RS2_FORMAT_BGR8, color_fps_);
     }
     if (use_depth_camera_)
     {
-      // config_.enable_stream(RS2_STREAM_DEPTH, 848, 480, RS2_FORMAT_Z16, 60);
-      config_.enable_stream(RS2_STREAM_DEPTH, depth_width_, depth_height_, RS2_FORMAT_Z16, 60);
+      config_.enable_stream(RS2_STREAM_DEPTH, depth_width_, depth_height_, RS2_FORMAT_Z16, depth_fps_);
     }
 
     // Start camera
@@ -129,16 +127,18 @@ const Transform3fA *RealSense::depth2color_pose() const {
     return nullptr;
 }
 
-RealSenseColorCamera::RealSenseColorCamera(const std::string &name, unsigned int Width, unsigned int Height,
+RealSenseColorCamera::RealSenseColorCamera(const std::string &name,
+                                           unsigned int Width, unsigned int Height, int FrameRate,
                                            bool use_depth_as_world_frame)
     : ColorCamera{name},
       use_depth_as_world_frame_{use_depth_as_world_frame},
       realsense_{RealSense::GetInstance()},
-      width_(Width), height_(Height)
+      width_(Width), height_(Height), fps_(FrameRate)
 {
   realsense_.UseColorCamera();
   realsense_id_ = realsense_.RegisterID();
   realsense_.setColorResolution(width_, height_);
+  realsense_.setColorFrameRate(fps_);
 }
 
 RealSenseColorCamera::RealSenseColorCamera(const std::string &name,
@@ -254,16 +254,18 @@ void RealSenseColorCamera::GetIntrinsics() {
   intrinsics_.height = intrinsics.height;
 }
 
-RealSenseDepthCamera::RealSenseDepthCamera(const std::string &name, unsigned int Width, unsigned int Height,
+RealSenseDepthCamera::RealSenseDepthCamera(const std::string &name,
+                                           unsigned int Width, unsigned int Height, int FrameRate,
                                            bool Align2Color, bool use_color_as_world_frame)
     : DepthCamera{name},
       use_color_as_world_frame_{use_color_as_world_frame},
       realsense_{RealSense::GetInstance()},
-      width_(Width), height_(Height)
+      width_(Width), height_(Height), fps_(FrameRate)
 {
   realsense_.UseDepthCamera();
   realsense_id_ = realsense_.RegisterID();
   realsense_.setDepthResolution(width_, height_);
+  realsense_.setDepthFrameRate(fps_);
   if (Align2Color)
   {
     realsense_.align2Color();

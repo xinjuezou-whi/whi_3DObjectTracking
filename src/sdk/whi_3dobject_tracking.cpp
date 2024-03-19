@@ -163,15 +163,19 @@ namespace whi_3DObjectTracking
         node_handle_->getParam("bodies", bodyNames);
         std::vector<int> resolutions;
         node_handle_->getParam("image_resolution", resolutions);
+        std::vector<int> frameRates;
+        node_handle_->getParam("frame_rates", frameRates);
+        bool printIntrinsics;
+        node_handle_->getParam("print_intrinsics", printIntrinsics);
 
         // setup tracker and renderer geometry
         auto tracker{ std::make_shared<m3t::Tracker>("tracker") };
         auto rendererGeometry{ std::make_shared<m3t::RendererGeometry>("renderer geometry") };
         // create cameras
         auto colorCamera{ std::make_shared<m3t::RealSenseColorCamera>("realsense_color",
-            resolutions[0], resolutions[1]) };
+            resolutions[0], resolutions[1], frameRates[0]) };
         auto depthCamera{ std::make_shared<m3t::RealSenseDepthCamera>("realsense_depth",
-            resolutions[0], resolutions[1], align2Color) };
+            resolutions[0], resolutions[1], frameRates[1], align2Color) };
         // setup viewers
         // color viewer
         auto colorViewer{ std::make_shared<m3t::NormalColorViewer>("color_viewer",
@@ -270,6 +274,18 @@ namespace whi_3DObjectTracking
         // start tracking
         if (tracker->SetUp())
         {
+            if (printIntrinsics)
+            {
+                auto intrinsicsColor = colorCamera->intrinsics();
+                std::cout << "color intrinsics:" << std::endl;
+                std::cout << "fu: " << intrinsicsColor.fu << " fv: " << intrinsicsColor.fv <<
+                    ", pu: " << intrinsicsColor.ppu << " pv: " << intrinsicsColor.ppv << std::endl;
+                auto intrinsicsDepth = depthCamera->intrinsics();
+                std::cout << "depth intrinsics:" << std::endl;
+                std::cout << "fu: " << intrinsicsDepth.fu << " fv: " << intrinsicsDepth.fv <<
+                    ", pu: " << intrinsicsDepth.ppu << " pv: " << intrinsicsDepth.ppv << std::endl;
+            }
+
             // acquire the link2world poses
             for (const auto& it : tracker->detector_ptrs())
             {
