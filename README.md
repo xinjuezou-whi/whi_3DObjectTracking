@@ -67,8 +67,12 @@ source <your workspace>/devel/setup.bash
 
 ```
 whi_3dobject_tracking:
+  image_resolution: [848, 480] # width, height
+  frame_rates: [60, 60] # color and depth
+  align_to_color: false
   view_color: true
-  view_depth: false
+  view_depth: true
+  print_intrinsics: false
   visualize_pose_result: false
   use_region_modality: true
   use_depth_modality: true
@@ -79,13 +83,19 @@ whi_3dobject_tracking:
   bodies: ["io_485"] #[ "io_485", "triangle" ]
   directory: /home/whi/catkin_workspace/src/whi_3dobject_tracking/data
   color_topic: color_view
+  color_overlay_topic: color_overlay_view
   depth_topic: depth_view
+  depth_overlay_topic: depth_overlay_view
   pose_topic: tcp_pose
   pose_service: tcp_pose
   pose_frame: camera
   # chin: [0, 0, 0, -1.5708, 0, -1.5708] and [0.18, 0, 0]
+  # world_to_tcp: [0, 0, 0, -1.5708, 0, -1.5708]
+  # object_to_tcp: [0, 0, 0, 0, -1.5708, 0]
+  # position_reference: [0.18, 0, 0]
   # ur: [0, 0, 0, 1.5708, 0, 0] and [0, -0.18, 0]
-  transform_to_tcp: [0, 0, 0, 1.5708, 0, 0]
-  transformed_reference: [0, -0.18, 0]
-  euler_muliplier: [0.2, 0.2, 0.2]
+  world_to_tcp: [0, 0, 0, 1.5708, 0, 0]
+  object_to_tcp: [0, 0, 0, 1.5708, -1.5708, 0]
+  position_reference: [0, -0.18, 0]
+  euler_muliplier: [0.0, 0.0, 0.0]
 ```
